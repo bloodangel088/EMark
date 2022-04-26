@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMark.Api", "EMark.Api\EMark.Api.csproj", "{BC063CEE-8906-4605-9A1E-69CF6B8AC238}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMark.Application", "EMark.Application\EMark.Application.csproj", "{E5D0876A-8F01-4651-B025-D4B5F05A4DAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMark.DataAccess", "EMark.DataAccess\EMark.DataAccess.csproj", "{CECCBEB5-C45E-430D-B973-E03E62545C64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMark.Api.Models", "EMark.Api.Models\EMark.Api.Models.csproj", "{DE345A72-A10B-4330-A580-7365FF7D420B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC063CEE-8906-4605-9A1E-69CF6B8AC238}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC063CEE-8906-4605-9A1E-69CF6B8AC238}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC063CEE-8906-4605-9A1E-69CF6B8AC238}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC063CEE-8906-4605-9A1E-69CF6B8AC238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5D0876A-8F01-4651-B025-D4B5F05A4DAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5D0876A-8F01-4651-B025-D4B5F05A4DAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5D0876A-8F01-4651-B025-D4B5F05A4DAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5D0876A-8F01-4651-B025-D4B5F05A4DAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CECCBEB5-C45E-430D-B973-E03E62545C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CECCBEB5-C45E-430D-B973-E03E62545C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CECCBEB5-C45E-430D-B973-E03E62545C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CECCBEB5-C45E-430D-B973-E03E62545C64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE345A72-A10B-4330-A580-7365FF7D420B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE345A72-A10B-4330-A580-7365FF7D420B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE345A72-A10B-4330-A580-7365FF7D420B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE345A72-A10B-4330-A580-7365FF7D420B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
