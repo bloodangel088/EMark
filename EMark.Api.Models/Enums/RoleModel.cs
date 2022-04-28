@@ -2,7 +2,7 @@
 {
     public enum RoleModel
     {
-        User,
+        Student,
         Teacher
     }
 }

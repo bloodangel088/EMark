@@ -18,7 +18,7 @@ namespace EMark.Api.Controllers
         {
             _authService = authService;
         }
-        
+
         [HttpPost("{role}/register")]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]

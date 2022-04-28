@@ -3,15 +3,17 @@ using System;
 using EMark.DataAccess.Connection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EMark.DataAccess.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220428103804_AddInitialTables")]
+    partial class AddInitialTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,51 +34,6 @@ namespace EMark.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("EMark.DataAccess.Entities.Mark", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("MarkColumnId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MarkColumnId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Marks");
-                });
-
-            modelBuilder.Entity("EMark.DataAccess.Entities.MarkColumn", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.ToTable("MarkColumns");
                 });
 
             modelBuilder.Entity("EMark.DataAccess.Entities.RefreshToken", b =>
@@ -127,31 +84,6 @@ namespace EMark.DataAccess.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("StudentGroups");
-                });
-
-            modelBuilder.Entity("EMark.DataAccess.Entities.Subject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("EMark.DataAccess.Entities.TeacherGroup", b =>
@@ -222,36 +154,6 @@ namespace EMark.DataAccess.Migrations
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("EMark.DataAccess.Entities.Mark", b =>
-                {
-                    b.HasOne("EMark.DataAccess.Entities.MarkColumn", "MarkColumn")
-                        .WithMany("Marks")
-                        .HasForeignKey("MarkColumnId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EMark.DataAccess.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MarkColumn");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("EMark.DataAccess.Entities.MarkColumn", b =>
-                {
-                    b.HasOne("EMark.DataAccess.Entities.Subject", "Subject")
-                        .WithMany("MarkColumns")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
-                });
-
             modelBuilder.Entity("EMark.DataAccess.Entities.RefreshToken", b =>
                 {
                     b.HasOne("EMark.DataAccess.Entities.User", null)
@@ -269,32 +171,11 @@ namespace EMark.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EMark.DataAccess.Entities.Student", "Student")
+                    b.HasOne("EMark.DataAccess.Entities.Student", null)
                         .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("EMark.DataAccess.Entities.Subject", b =>
-                {
-                    b.HasOne("EMark.DataAccess.Entities.Group", "Group")
-                        .WithMany("Subjects")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EMark.DataAccess.Entities.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("EMark.DataAccess.Entities.TeacherGroup", b =>
@@ -305,32 +186,18 @@ namespace EMark.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EMark.DataAccess.Entities.Teacher", "Teacher")
+                    b.HasOne("EMark.DataAccess.Entities.Teacher", null)
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("EMark.DataAccess.Entities.Group", b =>
                 {
                     b.Navigation("StudentGroups");
 
-                    b.Navigation("Subjects");
-
                     b.Navigation("TeacherGroups");
-                });
-
-            modelBuilder.Entity("EMark.DataAccess.Entities.MarkColumn", b =>
-                {
-                    b.Navigation("Marks");
-                });
-
-            modelBuilder.Entity("EMark.DataAccess.Entities.Subject", b =>
-                {
-                    b.Navigation("MarkColumns");
                 });
 #pragma warning restore 612, 618
         }

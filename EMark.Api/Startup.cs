@@ -82,7 +82,7 @@ namespace EMark.Api
                     Enum = new List<IOpenApiAny>()
                     {
                         new OpenApiString(nameof(RoleModel.Teacher)),
-                        new OpenApiString(nameof(RoleModel.User))
+                        new OpenApiString(nameof(RoleModel.Student))
                     }
                 });
                 
