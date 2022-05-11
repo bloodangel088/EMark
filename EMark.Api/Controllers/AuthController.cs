@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EMark.Api.Controllers
 {
-
+    [AllowAnonymous]
     public class AuthController : ApiControllerBase
     {
         private readonly IAuthService _authService;

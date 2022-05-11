@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using EMark.Api.Models.Responses.Journal;
 
 namespace EMark.Application.Services
 {
@@ -128,15 +129,32 @@ namespace EMark.Application.Services
 
         public async Task<JournalModel> GetJournal(int subjectId)
         {
-            var subject = await _databaseContext.Subjects
-                .Include(subject =>subject.MarkColumns)
-                .ThenInclude(markColumn =>markColumn.Marks)
-                .AsNoTracking().FirstOrDefaultAsync(subject => subject.Id == subjectId);
-            if (subject is null)
+            var journalModel = await _databaseContext.Subjects
+                .AsNoTracking()
+                .Where(subject => subject.Id == subjectId)
+                .Select(subject => new JournalModel()
+                {
+                    Name = subject.Name,
+                    GroupName = subject.Group.Name,
+                    TeacherFullname = $"{subject.Teacher.Firstname} {subject.Teacher.Lastname} {subject.Teacher.Patronymic}",
+                    Columns = subject.MarkColumns.Select(column => new JournalMarkColumn()
+                    {
+                        Name = column.Name,
+                        Marks = column.Marks.Select(mark => new JournalMarkModel()
+                        {
+                            StudentFullname = $"{mark.Student.Firstname} {mark.Student.Lastname} {mark.Student.Patronymic}",
+                            Value = mark.Value
+                        }).ToArray()
+                    }).ToArray()
+                })
+                .FirstOrDefaultAsync();
+            
+            if (journalModel is null)
             {
                 throw new NotFoundException("Subject is not found");
             }
 
+            return journalModel;
         }
     }
 }

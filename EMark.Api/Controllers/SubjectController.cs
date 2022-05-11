@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Threading.Tasks;
+using EMark.Api.Models.Responses.Journal;
 
 namespace EMark.Api.Controllers
 {
@@ -54,6 +55,14 @@ namespace EMark.Api.Controllers
         {
             await _subjectService.DeleteSubject(subjectId, groupId);
             return NoContent();
+        }
+
+        [HttpGet("{subjectId}/journal")]
+        [ProducesResponseType(typeof(JournalModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<JournalModel> GetJournal([FromRoute] int subjectId)
+        {
+            return await _subjectService.GetJournal(subjectId);
         }
     }
 }

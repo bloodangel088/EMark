@@ -26,8 +26,8 @@ namespace EMark.Application.Services
 
         public async Task CreateGroup(GroupModel groupModel)
         {
-            bool isGroupAlredyExist = await _databaseContext.Groups.AsNoTracking().AnyAsync(group => group.Name == groupModel.Name);
-            if (!isGroupAlredyExist)
+            bool isGroupAlreadyExist = await _databaseContext.Groups.AsNoTracking().AnyAsync(group => group.Name == groupModel.Name);
+            if (isGroupAlreadyExist)
             {
                 throw new ValidationException("Group is already exist");
             }
@@ -80,14 +80,14 @@ namespace EMark.Application.Services
                 throw new NotFoundException("Student not found");
             }
 
-            var group = await _databaseContext.Groups.Include(group => group.TeacherGroups).SingleOrDefaultAsync(group => group.Id == groupId);
+            var group = await _databaseContext.Groups.Include(group => group.StudentGroups).SingleOrDefaultAsync(group => group.Id == groupId);
             if (group is null)
             {
                 throw new NotFoundException("Group is not found");
             }
 
             bool isStudentAlreadyInGroup = group.StudentGroups.Any(studentInDb => studentInDb.StudentId == student.Id);
-            if (!isStudentAlreadyInGroup)
+            if (isStudentAlreadyInGroup)
             {
                 throw new ValidationException("Student already in group");
             }
