@@ -211,8 +211,6 @@ namespace EMark.DataAccess.Migrations
             modelBuilder.Entity("EMark.DataAccess.Entities.Student", b =>
                 {
                     b.HasBaseType("EMark.DataAccess.Entities.User");
-
-                    b.HasDiscriminator().HasValue(0);
                 });
 
             modelBuilder.Entity("EMark.DataAccess.Entities.Teacher", b =>

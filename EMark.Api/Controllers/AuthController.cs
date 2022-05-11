@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EMark.Api.Controllers
 {
-    [AllowAnonymous]
+
     public class AuthController : ApiControllerBase
     {
         private readonly IAuthService _authService;
@@ -43,6 +43,50 @@ namespace EMark.Api.Controllers
         public async Task<IActionResult> Refresh([FromBody] RefreshAccessTokenModel request)
         {
             return MapAuthResponse(await _authService.RefreshAccessToken(request));
+        }
+
+        [HttpPut("update-user")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel request)
+        {
+            await _authService.UpdateUser(request);
+            return NoContent();
+        }
+
+        [HttpGet("user-info")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
+        public async Task<UserUpdateModel> GetUser()
+        {
+            return await _authService.GetUser();
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpGet("user-info-by-id")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
+        public async Task<UserUpdateModel> GetUserById(int userId)
+        {
+            return await _authService.GetUserById(userId);
+        }
+
+        [HttpPut("update-user-password")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateUserPassword([FromBody] UpdatePasswordModel request)
+        {
+            await _authService.UpdateUserPassword(request);
+            return NoContent();
+        }
+
+        [HttpDelete("delete-user")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteUser()
+        {
+            await _authService.DeleteUser();
+            return NoContent();
         }
 
         private IActionResult MapAuthResponse(AuthResponse authResponse) 

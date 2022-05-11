@@ -47,6 +47,9 @@ namespace EMark.Api
             services.Configure<JwtOptions>(_configuration.GetSection(nameof(JwtOptions)));
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<ISubjectService, SubjectService>();
+            services.AddScoped<IMarksService, MarksService>();
             services.AddFriendlyJwt();
             
             services.AddAutoMapper((config) =>

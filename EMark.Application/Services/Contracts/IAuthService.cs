@@ -10,5 +10,10 @@ namespace EMark.Application.Services.Contracts
         Task<AuthResponse> Register(UserRegisterModel model, RoleModel role);
         Task<AuthResponse> SignIn(UserSignInModel model);
         Task<AuthResponse> RefreshAccessToken(RefreshAccessTokenModel model);
+        Task UpdateUser(UserUpdateModel model);
+        Task<UserUpdateModel> GetUser();
+        Task<UserUpdateModel> GetUserById(int userId);
+        Task UpdateUserPassword(UpdatePasswordModel model);
+        Task DeleteUser();
     }
 }

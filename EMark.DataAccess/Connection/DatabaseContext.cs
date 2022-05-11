@@ -29,8 +29,9 @@ namespace EMark.DataAccess.Connection
                 .HasValue<Student>(Role.Student)
                 .HasValue<Teacher>(Role.Teacher);
 
+
             // Groups
-            
+
             modelBuilder.Entity<Group>().ToTable("Groups");
 
             modelBuilder.Entity<StudentGroup>()
