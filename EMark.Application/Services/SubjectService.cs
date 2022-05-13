@@ -26,7 +26,7 @@ namespace EMark.Application.Services
             _jwtTokenReader = jwtTokenReader;
         }
 
-        public async Task CreateSubject(SubjectModel model)
+        public async Task CreateSubject(SubjectModel model, int groupId)
         {
             var teacherId = int.Parse(_jwtTokenReader.UserId);
 
@@ -36,19 +36,19 @@ namespace EMark.Application.Services
                 throw new NotFoundException("Teacher not found");
             }
 
-            var group = await _databaseContext.Groups.AsNoTracking().SingleOrDefaultAsync(group => group.Id == model.GroupId);
+            var group = await _databaseContext.Groups.AsNoTracking().SingleOrDefaultAsync(group => group.Id == groupId);
             if (group is null)
             {
                 throw new NotFoundException("Group is not found");
             }
 
-            bool isSubjectAlreadyExist = await _databaseContext.Subjects.AnyAsync(subject => subject.Name == model.Name && subject.GroupId == model.GroupId);
+            bool isSubjectAlreadyExist = await _databaseContext.Subjects.AnyAsync(subject => subject.Name == model.Name && subject.GroupId == group.Id);
             if (isSubjectAlreadyExist == true)
             {
                 throw new ValidationException("Subject already exists in group");
             }
 
-            bool isTeacherInGroup = await _databaseContext.Groups.AnyAsync(group => group.Id == model.GroupId && group.TeacherGroups.Any(teacher => teacher.Id == model.TeacherId));
+            bool isTeacherInGroup = await _databaseContext.Groups.AnyAsync(group => group.Id == groupId && group.TeacherGroups.Any(teacher => teacher.Id == teacherId));
             if (!isTeacherInGroup)
             {
                 throw new ValidationException("Teacher must be in group");
@@ -57,8 +57,8 @@ namespace EMark.Application.Services
             _databaseContext.Subjects.Add(new Subject
             {
                 Name = model.Name,
-                TeacherId = model.TeacherId,
-                GroupId = model.GroupId,
+                TeacherId = teacherId,
+                GroupId = groupId,
             });
 
             await _databaseContext.SaveChangesAsync();

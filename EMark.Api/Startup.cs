@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using EMark.Api.Models.Enums;
+using EMark.Api.Validators;
 using EMark.Application.Mapping;
 using EMark.Application.Options;
 using EMark.Application.Services;
 using EMark.Application.Services.Contracts;
 using EMark.DataAccess.Connection;
+using FluentValidation.AspNetCore;
 using Kirpichyov.FriendlyJwt.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -56,8 +58,17 @@ namespace EMark.Api
             {
                 config.AddMaps(typeof(AuthProfile).Assembly);
             });
-            
+
+            services.AddFluentValidation(configuration =>
+            {
+                configuration.RegisterValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+            });
+
             services.AddControllers()
+                    .AddMvcOptions(options =>
+                    {
+                        options.Filters.Add<ExceptionMiddleware>();
+                    })
                     .AddNewtonsoftJson(options =>
                     {
                         options.SerializerSettings.Converters.Add(

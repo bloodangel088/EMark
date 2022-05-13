@@ -3,7 +3,6 @@
     public class SubjectModel
     {
         public string Name { get; set; }
-        public int TeacherId { get; set; }
-        public int GroupId { get; set; }
+
     }
 }

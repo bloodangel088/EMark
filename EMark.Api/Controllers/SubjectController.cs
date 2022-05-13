@@ -19,12 +19,12 @@ namespace EMark.Api.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
-        [HttpPost("create-subject")]
+        [HttpPost("{groupId}/create-subject")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateSubject([FromBody] SubjectModel request)
+        public async Task<IActionResult> CreateSubject([FromBody] SubjectModel request,[FromRoute] int groupId)
         {
-            await _subjectService.CreateSubject(request);
+            await _subjectService.CreateSubject(request, groupId);
             return NoContent();
         }
 

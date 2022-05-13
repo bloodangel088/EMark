@@ -18,12 +18,12 @@ namespace EMark.Api.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
-        [HttpPost("create-mark-column")]
+        [HttpPost("{subjectId}create-mark-column")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMarkColumn([FromBody] MarkColumnModel request)
+        public async Task<IActionResult> CreateMarkColumn([FromBody] MarkColumnModel request, [FromRoute] int subjectId)
         {
-            await _marksService.CreateMarkColumn(request);
+            await _marksService.CreateMarkColumn(request, subjectId);
             return NoContent();
         }
 
@@ -31,9 +31,9 @@ namespace EMark.Api.Controllers
         [HttpPost("create-mark")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateMark([FromBody] MarkModel request)
+        public async Task<IActionResult> CreateMark([FromBody] MarkModel request, [BindRequired] int markColumnId, [BindRequired] int studentId)
         {
-            await _marksService.CreateMark(request);
+            await _marksService.CreateMark(request, markColumnId,studentId);
             return NoContent();
         }
 

@@ -56,7 +56,7 @@ namespace EMark.Api.Controllers
             await _groupService.UpdateGroup(request, groupId);
             return NoContent();
         }
-        [AllowAnonymous]
+
         [HttpGet("{id}/group-info")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -9,6 +9,5 @@ namespace EMark.Api.Models.Responses
     public class MarkColumnModel
     {
         public string Name { get; set; }
-        public int SubjectId { get; set; }
     }
 }
