@@ -26,7 +26,7 @@ namespace EMark.Application.Services
         public async Task CreateMarkColumn(MarkColumnModel model, int subjectId)
         {
             var teacherId = int.Parse(_jwtTokenReader.UserId);
-            var teacherGroups = _databaseContext.Groups.Where(group => group.TeacherGroups.Any(teacher => teacher.Id == teacherId)).Select(group => group.Id).ToArray();
+            var teacherGroups = _databaseContext.Groups.Where(group => group.TeacherGroups.Any(teacher => teacher.TeacherId == teacherId)).Select(group => group.Id).ToArray();
 
             var subject = await _databaseContext.Subjects.AsNoTracking().SingleOrDefaultAsync(subject => subject.Id == subjectId && teacherGroups.Contains(subject.GroupId));
             if (subject is null)
@@ -53,7 +53,7 @@ namespace EMark.Application.Services
         public async Task UpdateMarkColumn(ColumnUpdateModel model, int subjectId, int columnId)
         {
             var teacherId = int.Parse(_jwtTokenReader.UserId);
-            var teacherGroups = _databaseContext.Groups.Where(group => group.TeacherGroups.Any(teacher => teacher.Id == teacherId)).Select(group => group.Id).ToArray();
+            var teacherGroups = _databaseContext.Groups.Where(group => group.TeacherGroups.Any(teacher => teacher.TeacherId == teacherId)).Select(group => group.Id).ToArray();
 
             var subject = await _databaseContext.Subjects.Include(subject => subject.MarkColumns).AsNoTracking().SingleOrDefaultAsync(subject => subject.Id == subjectId && teacherGroups.Contains(subject.GroupId));
             if (subject is null)
@@ -72,11 +72,11 @@ namespace EMark.Application.Services
             await _databaseContext.SaveChangesAsync();
         }
 
-        public async Task CreateMark(MarkModel model, int studentId, int markColumnId)
+        public async Task CreateMark(MarkModel model, int markColumnId, int studentId)
         {
 
             var teacherId = int.Parse(_jwtTokenReader.UserId);
-            var teacherGroups = _databaseContext.Groups.Where(group => group.TeacherGroups.Any(teacher => teacher.Id == teacherId)).Select(group => group.Id).ToArray();
+            var teacherGroups = _databaseContext.Groups.Where(group => group.TeacherGroups.Any(teacher => teacher.TeacherId == teacherId)).Select(group => group.Id).ToArray();
 
             var markColumn = await _databaseContext.MarkColumns.AsNoTracking().SingleOrDefaultAsync(markColumn => markColumn.Id == markColumnId && teacherGroups.Contains(markColumn.Subject.GroupId));
             if (markColumn is null)
@@ -88,6 +88,12 @@ namespace EMark.Application.Services
             if (student is null)
             {
                 throw new NotFoundException("Student is not found");
+            }
+
+            bool isMarkAlreadyExist = await _databaseContext.Marks.AnyAsync(mark => mark.StudentId == studentId && markColumn.Id == markColumnId);
+            if (isMarkAlreadyExist)
+            {
+                throw new ValidationException("Mark already exists in Column");
             }
 
             _databaseContext.Marks.Add(new Mark

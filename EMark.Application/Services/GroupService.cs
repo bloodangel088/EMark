@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Linq;
 using EMark.Application.Exeptions;
+using System.Collections.Generic;
 
 namespace EMark.Application.Services
 {
@@ -46,16 +47,17 @@ namespace EMark.Application.Services
 
         public async Task AddTeacherToGroup(AddGroupModel model, int groupId)
         {
-            var teacher = await _databaseContext.Users.AsNoTracking().OfType<Teacher>().SingleOrDefaultAsync(teacher => teacher.Email == model.Email);
-            if (teacher is null)
-            {
-                throw new NotFoundException("Teacher not found");
-            }
 
             var group = await _databaseContext.Groups.Include(group => group.TeacherGroups).SingleOrDefaultAsync(group => group.Id == groupId);
             if (group is null)
             {
                 throw new NotFoundException("Group is not found");
+            }
+
+            var teacher = await _databaseContext.Users.AsNoTracking().OfType<Teacher>().SingleOrDefaultAsync(teacher => teacher.Email == model.Email);
+            if (teacher is null)
+            {
+                throw new NotFoundException("Teacher not found");
             }
 
             bool isTeacherAlreadyInGroup = group.TeacherGroups.Any(teacherInDb=> teacherInDb.TeacherId == teacher.Id);
@@ -74,16 +76,16 @@ namespace EMark.Application.Services
 
         public async Task AddStudentToGroup(AddGroupModel model, int groupId)
         {
-            var student = await _databaseContext.Users.AsNoTracking().OfType<Student>().SingleOrDefaultAsync(student => student.Email == model.Email);
-            if (student is null)
-            {
-                throw new NotFoundException("Student not found");
-            }
-
             var group = await _databaseContext.Groups.Include(group => group.StudentGroups).SingleOrDefaultAsync(group => group.Id == groupId);
             if (group is null)
             {
                 throw new NotFoundException("Group is not found");
+            }
+
+            var student = await _databaseContext.Users.AsNoTracking().OfType<Student>().SingleOrDefaultAsync(student => student.Email == model.Email);
+            if (student is null)
+            {
+                throw new NotFoundException("Student not found");
             }
 
             bool isStudentAlreadyInGroup = group.StudentGroups.Any(studentInDb => studentInDb.StudentId == student.Id);
@@ -102,6 +104,12 @@ namespace EMark.Application.Services
 
         public async Task DeleteTeacherFromGroup(int groupId)
         {
+            var group = await _databaseContext.Groups.AsNoTracking().SingleOrDefaultAsync(group => group.Id == groupId);
+            if (group is null)
+            {
+                throw new NotFoundException("Group is not found");
+            }
+
             var teacherId = int.Parse(_jwtTokenReader.UserId);
 
             var teacherGroup = await _databaseContext.TeacherGroups
@@ -120,6 +128,12 @@ namespace EMark.Application.Services
 
         public async Task DeleteStudentFromGroup(int groupId, int studentId)
         {
+            var group = await _databaseContext.Groups.AsNoTracking().SingleOrDefaultAsync(group => group.Id == groupId);
+            if (group is null)
+            {
+                throw new NotFoundException("Group is not found");
+            }
+
             var studentGroup = await _databaseContext.StudentGroups
                 .Include(student => student.Student)
                 .ThenInclude(student => student.Marks)
@@ -136,7 +150,14 @@ namespace EMark.Application.Services
 
         public async Task DeleteGroup(int groupId)
         {
+            Group group = await _databaseContext.Groups.SingleAsync(group => group.Id == groupId);
+            if (group is null)
+            {
+                throw new NotFoundException("Group is not found");
+            }
 
+            _databaseContext.Groups.Remove(group);
+            await _databaseContext.SaveChangesAsync();
         }
 
         public async Task UpdateGroup(GroupModel model, int groupId)
@@ -162,6 +183,32 @@ namespace EMark.Application.Services
             }
 
             return _mapper.Map<GroupModel>(group);
+        }
+
+        public async Task<IReadOnlyCollection<UserUpdateModel>> GetAllTeachersFromgroup(int groupId)
+        {
+            var group = await _databaseContext.Groups.Include(group => group.TeacherGroups).ThenInclude(teacherGroup => teacherGroup.Teacher).SingleOrDefaultAsync(group => group.Id == groupId);
+            if (group is null)
+            {
+                throw new NotFoundException("Group is not found");
+            }
+
+            var teachers = group.TeacherGroups.Select(teacherGroup => teacherGroup.Teacher).ToArray();
+
+            return _mapper.Map<IReadOnlyCollection<Teacher>, IReadOnlyCollection<UserUpdateModel>>(teachers);
+        }
+
+        public async Task<IReadOnlyCollection<UserUpdateModel>> GetAllStudentsFromgroup(int groupId)
+        {
+            var group = await _databaseContext.Groups.Include(group => group.StudentGroups).ThenInclude(studentGroup => studentGroup.Student).SingleOrDefaultAsync(group => group.Id == groupId);
+            if (group is null)
+            {
+                throw new NotFoundException("Group is not found");
+            }
+
+            var students = group.StudentGroups.Select(studentGroup => studentGroup.Student).ToArray();
+
+            return _mapper.Map<IReadOnlyCollection<Student>, IReadOnlyCollection<UserUpdateModel>>(students);
         }
     }
 }

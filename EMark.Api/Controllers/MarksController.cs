@@ -18,7 +18,7 @@ namespace EMark.Api.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
-        [HttpPost("{subjectId}create-mark-column")]
+        [HttpPost("{subjectId}/create-mark-column")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateMarkColumn([FromBody] MarkColumnModel request, [FromRoute] int subjectId)

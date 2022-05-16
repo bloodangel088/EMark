@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EMark.Api.Controllers
 {
-    [AllowAnonymous]
+    
     public class AuthController : ApiControllerBase
     {
         private readonly IAuthService _authService;
@@ -19,6 +19,7 @@ namespace EMark.Api.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
         [HttpPost("{role}/register")]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
@@ -27,19 +28,19 @@ namespace EMark.Api.Controllers
             return MapAuthResponse(await _authService.Register(request, role));
         }
 
+        [AllowAnonymous]
         [HttpPost("sign-in")]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
-        [AllowAnonymous]
         public async Task<IActionResult> SignIn([FromBody] UserSignInModel request)
         {
             return MapAuthResponse(await _authService.SignIn(request));
-        }  
-        
+        }
+
+        [AllowAnonymous]
         [HttpPost("refresh")]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
-        [AllowAnonymous]
         public async Task<IActionResult> Refresh([FromBody] RefreshAccessTokenModel request)
         {
             return MapAuthResponse(await _authService.RefreshAccessToken(request));

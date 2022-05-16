@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EMark.Api.Controllers
@@ -66,6 +67,24 @@ namespace EMark.Api.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
+        [HttpGet("{id}/teachers-in-group")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IReadOnlyCollection<UserUpdateModel>> GetAllTeachersFromgroup([FromRoute(Name = "id")] int groupId)
+        {
+            return await _groupService.GetAllTeachersFromgroup(groupId);
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpGet("{id}/students-in-group")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IReadOnlyCollection<UserUpdateModel>> GetAllStudentsFromgroup([FromRoute(Name = "id")] int groupId)
+        {
+            return await _groupService.GetAllStudentsFromgroup(groupId);
+        }
+
+        [Authorize(Roles = "Teacher")]
         [HttpDelete("{id}/teacher-leave-from-group")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -82,6 +101,16 @@ namespace EMark.Api.Controllers
         public async Task<IActionResult> DeleteStudentFromGroup([FromRoute(Name = "id")] int groupId, [BindRequired] int studentId)
         {
             await _groupService.DeleteStudentFromGroup(groupId, studentId);
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpDelete("{id}/remove-group")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteGroup([FromRoute(Name = "id")] int groupId)
+        {
+            await _groupService.DeleteGroup(groupId);
             return NoContent();
         }
     }

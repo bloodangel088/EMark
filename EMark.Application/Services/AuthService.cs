@@ -72,6 +72,11 @@ namespace EMark.Application.Services
         {
             User user = await _databaseContext.Users.SingleAsync(user => user.Id == int.Parse(_jwtTokenReader.UserId));
 
+            if (user is null)
+            {
+                throw new NotFoundException("User not found");
+            }
+
             _mapper.Map(model, user);
             _databaseContext.Users.Update(user);
 
@@ -82,6 +87,10 @@ namespace EMark.Application.Services
         public async Task<UserUpdateModel> GetUser()
         {
             User user = await _databaseContext.Users.SingleAsync(user => user.Id == int.Parse(_jwtTokenReader.UserId));
+            if (user is null)
+            {
+                throw new NotFoundException("User not found");
+            }
 
             return _mapper.Map<User, UserUpdateModel>(user);
         }

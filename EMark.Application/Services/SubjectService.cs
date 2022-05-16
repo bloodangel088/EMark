@@ -48,7 +48,7 @@ namespace EMark.Application.Services
                 throw new ValidationException("Subject already exists in group");
             }
 
-            bool isTeacherInGroup = await _databaseContext.Groups.AnyAsync(group => group.Id == groupId && group.TeacherGroups.Any(teacher => teacher.Id == teacherId));
+            bool isTeacherInGroup = await _databaseContext.Groups.AnyAsync(group => group.Id == groupId && group.TeacherGroups.Any(teacher => teacher.TeacherId == teacherId));
             if (!isTeacherInGroup)
             {
                 throw new ValidationException("Teacher must be in group");
@@ -107,10 +107,11 @@ namespace EMark.Application.Services
                 .Include(teacherGroup => teacherGroup.Teacher)
                 .ThenInclude(teacher => teacher.Subjects)
                 .SingleOrDefaultAsync(teacherGroup => teacherGroup.GroupId == groupId && teacherGroup.TeacherId == teacherId);
-            
-            if (teacherGroup is null)
+            var group = await _databaseContext.Groups.AsNoTracking().SingleOrDefaultAsync(group => group.Id == groupId);
+
+            if (group is null)
             {
-                throw new NotFoundException("Teacher need be in group");
+                throw new NotFoundException("Group is not found");
             }
 
             if (subject is null)
@@ -121,6 +122,11 @@ namespace EMark.Application.Services
             if (subject.TeacherId != teacherId)
             {
                 throw new UnauthorizedAccessException();
+            }
+
+            if (teacherGroup is null)
+            {
+                throw new NotFoundException("Teacher need be in group");
             }
 
             _databaseContext.Subjects.Remove(subject);

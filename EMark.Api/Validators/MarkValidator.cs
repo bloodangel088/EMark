@@ -8,7 +8,6 @@ namespace EMark.Api.Validators
         public MarkValidator()
         {
             RuleFor(x => x.Value)
-                .NotEmpty()
                 .GreaterThanOrEqualTo(0); 
         }
     }
