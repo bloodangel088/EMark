@@ -90,7 +90,7 @@ namespace EMark.Application.Services
                 throw new NotFoundException("Student is not found");
             }
 
-            bool isMarkAlreadyExist = await _databaseContext.Marks.AnyAsync(mark => mark.StudentId == studentId && markColumn.Id == markColumnId);
+            bool isMarkAlreadyExist = await _databaseContext.Marks.AnyAsync(mark => mark.StudentId == studentId && mark.MarkColumnId == markColumnId);
             if (isMarkAlreadyExist)
             {
                 throw new ValidationException("Mark already exists in Column");
